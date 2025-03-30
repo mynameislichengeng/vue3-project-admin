@@ -1,0 +1,20 @@
+{
+    data:[{
+        lession: 'python',
+        todayNum: 10,
+        todayMonthNum: 100,
+        totalNum: 1000
+    },
+    {
+        lession: 'java',
+        todayNum: 20,
+        todayMonthNum: 200,
+        totalNum: 1000
+    },
+    {
+        lession: 'c++',
+        todayNum: 30,
+        todayMonthNum: 300,
+        totalNum: 1000
+    }]
+}
