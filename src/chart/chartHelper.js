@@ -8,6 +8,7 @@ import {
   TooltipComponent,
   GridComponent,
   DatasetComponent,
+  LegendComponent,
   TransformComponent
 } from 'echarts/components';
 // 标签自动布局、全局过渡动画等特性
@@ -22,6 +23,7 @@ echarts.use([
   GridComponent,
   DatasetComponent,
   TransformComponent,
+  LegendComponent,
   BarChart,
   LineChart,
   LabelLayout,
@@ -29,6 +31,8 @@ echarts.use([
   CanvasRenderer
 ]);
 
-function createChart(container, option) {
-    
+export function createChart(container, option) {
+  var myChart = echarts.init(container);
+  myChart.setOption(option);
 }
+

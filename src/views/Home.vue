@@ -49,7 +49,21 @@
                     </el-card>
 
                 </div>
+            </div>
 
+            <div class="chart-data">
+                <el-card shadow="hover">
+                    <div id="chart" style="height: 280px;" ref="chartRef">
+
+                    </div>
+                </el-card>
+            </div>
+            <div class="bar-chart-data">
+                <el-card shadow="hover">
+                    <div id="bar-chart" style="height: 280px;" ref="barChartRef">
+
+                    </div>
+                </el-card>
             </div>
         </el-col>
     </el-row>
@@ -59,6 +73,8 @@
 <script setup>
 
 import { ref, computed, onMounted, getCurrentInstance } from 'vue'
+import { createChart } from '../chart/chartHelper.js'
+
 import {
     SuccessFilled,
     StarFilled,
@@ -89,6 +105,8 @@ const countData = ref([
     { icon: "SuccessFilled" } // 默认图标
 ])
 
+const chartRef = ref(null)
+
 const getTableData = async () => {
     const resp = await proxy.$api.getTableData()
     tableData.value = resp.tableData
@@ -99,9 +117,44 @@ const getCountData = async () => {
     countData.value = resp.itemList
 }
 
+const getChartData = async () => {
+    const resp = await proxy.$api.getChartData()
+    const { orderData } = resp
+
+    // Extract brands from the first data item (assuming all items have same brands)
+    const brands = orderData.data.length > 0 ? Object.keys(orderData.data[0]) : []
+
+    const series = brands.map(brand => ({
+        name: brand,
+        type: 'line',
+        data: orderData.data.map(item => item[brand])
+    }))
+
+    const option = {
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data: brands
+        },
+        xAxis: {
+            type: 'category',
+            data: orderData.date
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: series
+    } 
+
+    createChart(chartRef.value, option)
+}
+
+
 onMounted(() => {
     getTableData()
     getCountData()
+    getChartData()
 })
 
 const tableDataLabel = ref({
@@ -197,6 +250,7 @@ const tableDataLabel = ref({
             display: flex;
             flex-direction: column;
             justify-content: center;
+
             .card-detail-name {
                 font-size: 20px;
                 margin-bottom: 10px;
