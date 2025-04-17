@@ -105,7 +105,12 @@ const countData = ref([
     { icon: "SuccessFilled" } // 默认图标
 ])
 
+//映射dom节点
 const chartRef = ref(null)
+const barChartRef = ref(null)
+
+//监听页面
+
 
 const getTableData = async () => {
     const resp = await proxy.$api.getTableData()
@@ -145,9 +150,40 @@ const getChartData = async () => {
             type: 'value'
         },
         series: series
-    } 
+    }
 
     createChart(chartRef.value, option)
+}
+
+const getBarChartData = async () => {
+    const resp = await proxy.$api.getChartData()
+    const { userData } = resp
+
+    const dateList = userData.map(item => item.date)
+    const barNewList = userData.map(item => item.new)
+    const barActiveList = userData.map(item => item.active)
+
+    const option = {
+
+        xAxis: {
+            data: dateList
+        },
+        yAxis: {},
+        series: [
+            {
+                name: '新增用户',
+                type: 'bar',
+                data: barNewList
+            },
+            {
+                name: '激活用户',
+                type: 'bar',
+                data: barActiveList
+            }
+        ]
+    }
+
+    createChart(barChartRef.value, option)
 }
 
 
@@ -155,6 +191,7 @@ onMounted(() => {
     getTableData()
     getCountData()
     getChartData()
+    getBarChartData()
 })
 
 const tableDataLabel = ref({
